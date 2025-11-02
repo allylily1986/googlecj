@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "Quick Insight Notes",
+  "description": "Capture learning highlights or spontaneous ideas from any page using a floating notes panel.",
+  "version": "0.1.0",
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting",
+    "activeTab",
+    "downloads"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_title": "Quick Insight Notes",
+    "default_popup": "ui/list.html"
+  ],
+  "commands": {
+    "toggle-panel": {
+      "suggested_key": {
+        "default": "Alt+N"
+      },
+      "description": "Toggle the floating note panel"
+    }
+  },
+  "background": {
+    "service_worker": "service_worker.js",
+    "type": "module"
+  },
+  "options_page": "ui/options.html",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content/panel.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

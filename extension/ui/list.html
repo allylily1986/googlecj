@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quick Insight Notes</title>
+    <link rel="stylesheet" href="list.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <div>
+          <h1>Quick Insight Notes</h1>
+          <p class="subtitle">筛选、导出或快速在页面上继续编辑</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn secondary" data-action="open-options">设置</button>
+          <button class="btn primary" data-action="new-note">新建笔记</button>
+        </div>
+      </header>
+
+      <section class="filters">
+        <div class="filter-group">
+          <label class="filter-label" for="category-filter">分类</label>
+          <select id="category-filter" class="filter-select">
+            <option value="all">全部</option>
+          </select>
+        </div>
+        <div class="filter-group grow">
+          <label class="filter-label" for="search">搜索</label>
+          <input id="search" type="search" placeholder="关键词..." />
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">批量操作</label>
+          <div class="bulk-actions">
+            <button class="btn secondary" data-action="select-all">全选</button>
+            <button class="btn secondary" data-action="clear-selection">清除</button>
+            <button class="btn secondary" data-action="export-markdown">导出 Markdown</button>
+            <button class="btn secondary" data-action="export-docx">导出 DOCX</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="list" data-role="notes"></section>
+      <footer class="app-footer">
+        <span data-role="status">加载中...</span>
+      </footer>
+    </main>
+    <template id="note-card-template">
+      <article class="note-card">
+        <header class="note-card-header">
+          <div>
+            <h2 data-field="title"></h2>
+            <span class="badge" data-field="category"></span>
+          </div>
+          <label class="note-select">
+            <input type="checkbox" data-field="selector" />
+          </label>
+        </header>
+        <p class="note-meta" data-field="meta"></p>
+        <p class="note-preview" data-field="preview"></p>
+        <div class="note-card-actions">
+          <button class="btn secondary" data-action="open">在页面打开</button>
+          <button class="btn secondary" data-action="export-md">导出 MD</button>
+          <button class="btn secondary" data-action="export-docx">导出 DOCX</button>
+          <button class="btn danger" data-action="delete">删除</button>
+        </div>
+      </article>
+    </template>
+    <div class="toast" data-role="toast"></div>
+    <script type="module" src="list.js"></script>
+  </body>
+</html>
