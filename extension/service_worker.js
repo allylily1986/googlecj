@@ -39,14 +39,14 @@ chrome.commands.onCommand.addListener(async (command) => {
   if (!tab?.id) {
     return;
   }
-  await togglePanel(tab.id);
+  await togglePanel(tab);
 });
 
 chrome.action.onClicked.addListener(async (tab) => {
   if (!tab?.id) {
     return;
   }
-  await togglePanel(tab.id);
+  await togglePanel(tab);
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -66,28 +66,64 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return false;
 });
 
-async function togglePanel(tabId) {
+function isInjectableUrl(url) {
+  if (!url) return false;
+  // Allow only http/https; block chrome://, edge://, chrome-extension://, about: etc.
+  return /^https?:\/\//i.test(url);
+}
+
+async function showTransientBadge(text = "!") {
+  try {
+    await chrome.action.setBadgeText({ text });
+    await chrome.action.setBadgeBackgroundColor({ color: "#d9534f" });
+    setTimeout(() => chrome.action.setBadgeText({ text: "" }), 2000);
+  } catch (_) {
+    // ignore badge errors
+  }
+}
+
+async function togglePanel(tab) {
+  const tabId = tab.id;
+  const url = tab.url;
+  if (!isInjectableUrl(url)) {
+    console.warn("[service_worker] The active tab is restricted and cannot be scripted:", url);
+    await showTransientBadge("!");
+    return;
+  }
   try {
     await chrome.tabs.sendMessage(tabId, { type: "panel:toggle" });
   } catch (error) {
     if (error?.message?.includes("Receiving end does not exist")) {
       await injectPanelContent(tabId);
       await chrome.tabs.sendMessage(tabId, { type: "panel:toggle" });
+    } else if (error?.message?.includes("Cannot access a chrome:// URL")) {
+      console.warn("[service_worker] Cannot access restricted URL:", url);
+      await showTransientBadge("!");
     } else {
       console.error("[service_worker] toggle panel error", error);
+      await showTransientBadge("!");
     }
   }
 }
 
 async function injectPanelContent(tabId) {
-  await chrome.scripting.insertCSS({
-    target: { tabId },
-    files: ["content/panel.css"]
-  });
-  await chrome.scripting.executeScript({
-    target: { tabId },
-    files: ["content/panel.js"]
-  });
+  try {
+    await chrome.scripting.insertCSS({
+      target: { tabId },
+      files: ["content/panel.css"]
+    });
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["content/panel.js"]
+    });
+  } catch (error) {
+    if (error?.message?.includes("Cannot access a chrome:// URL")) {
+      // Gracefully ignore restricted pages
+      await showTransientBadge("!");
+      return;
+    }
+    throw error;
+  }
 }
 
 function createMessageHandler(sender) {
