@@ -1,0 +1,28 @@
+# Node & build
+node_modules/
+dist/
+build/
+out/
+.next/
+.nuxt/
+
+# Coverage & caches
+coverage/
+.nyc_output/
+.cache/
+.parcel-cache/
+.turbo/
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Misc
+*.vsix
+reports/
