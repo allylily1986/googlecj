@@ -13,6 +13,24 @@ A lightweight notes/insights project extracted from Ubuntu and prepared for deve
 npm install
 ```
 
+## Browser Extension (Load Unpacked)
+
+- Chrome/Edge: open `chrome://extensions` or `edge://extensions`
+- Enable Developer mode
+- Click "Load unpacked" (or "加载未打包的扩展程序") and select:
+  - `D:\Program File\Cusor_projects\quick-insight-notes\extension`
+- Update after code changes: click "Reload" on the extension card (or toggle off/on)
+
+Notes:
+- Shortcut `Alt+N` toggles the panel on regular pages
+- Restricted pages like `chrome://*` cannot be scripted; use a normal http/https tab
+- To allow local file pages, enable "Allow access to file URLs" in the extension details
+
+## Packaged ZIP
+
+- Latest zip artifacts are generated under `artifacts/`, e.g. `quick-insight-notes-extension-YYYYMMDD-HHmmss.zip`
+- Use for store submission or distribution (not for "Load unpacked")
+
 ## Scripts
 
 - `npm run lint` - Lint the project with ESLint
@@ -43,3 +61,7 @@ npm install
   ```
 - If this is a browser/extension project, packaging/manifest steps may live under `extension/`.
 
+## Updating the Extension
+
+- After local changes, reload the extension in `chrome://extensions`
+- For a new ZIP, run packaging or ask the assistant to regenerate `artifacts/*.zip`
